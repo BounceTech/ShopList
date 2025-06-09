@@ -79,6 +79,7 @@ async function exportToPDF() {
   const items = JSON.parse(localStorage.getItem("groceryList")) || [];
   let y = 20;
   const date = new Date().toLocaleDateString();
+  const Name = `Spesa_${date}.pdf`;
 
   // Header
   doc.setFont("helvetica", "bold");
@@ -108,7 +109,7 @@ async function exportToPDF() {
   doc.setFont("helvetica", "bold");
   doc.text(`Totale: €${total.toFixed(2)}`, 150, y);
 
-  doc.save("lista-spesa.pdf");
+  doc.save(Name);
 
   // Clear list after saving
   localStorage.removeItem("groceryList");
