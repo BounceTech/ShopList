@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista Spesa</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main class="app">
+    <h1>🛒 La Mia Spesa</h1>
+    <div class="input-group">
+        <input type="text" id="itemInput" placeholder="Nome" />
+        <input type="number" id="priceInput" placeholder="Prezzo" step="0.01" />
+        <button onclick="addItem()">＋</button>
+    </div>
+
+    <div class="total">
+    Totale: <span id="totalAmount">€0.00</span>
+    </div>
+    
+    <ul id="itemList"></ul>
+    <button onclick="exportToPDF()">Fine spesa</button>
+
+  </main>
+
+  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</body>
+</html>

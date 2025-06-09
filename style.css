@@ -1,0 +1,104 @@
+:root {
+  --bg: #ceddfa;
+  --card: #67a3e2;
+  --accent: #a8d2f8;
+  --text: #dceeff;
+  --text-light: #f8f9fb;
+  --bg-list:#458fdf;
+  --font: 'Inter', arial, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  padding: 1rem;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app {
+  width: 100%;
+  max-width: 400px;
+  background: var(--card);
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+  font-size: 1.8rem;
+  color: var(--accent);
+}
+
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+input {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 1rem;
+  font-size: 1rem;
+  background: #ffffff;
+  color: #333;
+  width: 100%;
+}
+
+button {
+  background: var(--accent);
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  font-size: 1.2rem;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease-in-out;
+}
+
+ul {
+  list-style: none;
+  margin-top: 1rem;
+}
+
+li {
+  background: var(--bg-list);
+  padding: 0.8rem 1rem;
+  border-radius: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+  color: var(--text-light);
+}
+
+li button {
+  background: transparent;
+  border: none;
+  color: #f88;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.total {
+  margin-top: 1rem;
+  text-align: right;
+  font-size: 1.2rem;
+  color: var(--accent);
+  font-weight: 600;
+}
