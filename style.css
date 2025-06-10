@@ -19,7 +19,12 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1.25rem; /* 20px / 16 = 1.25rem */
+    margin-top: 3.125rem; /* 50px / 16 = 3.125rem */
+    /* Aggiunto padding-bottom per fare spazio alla fixed bottom-section, da calcolare */
+    padding-bottom: calc(1.875rem + 7.5rem + 1.25rem); /* padding container + altezza stimata fixed section + margine dal fondo */
+    /* 1.875rem (padding container) + ~7.5rem (altezza input/summary section) + 1.25rem (margin-bottom da .bottom-section-unified) */
 }
+
 
 h1 {
     text-align: center;
@@ -34,7 +39,9 @@ h1 {
     flex-direction: column;
     gap: 0.9375rem; /* 15px / 16 = 0.9375rem */
     margin-bottom: 1.25rem; /* 20px / 16 = 1.25rem */
-    max-height: 21.875rem; /* 350px / 16 = 21.875rem */
+    max-height: calc(100vh - 3.125rem - 1.5625rem - 1.875rem - 2.5rem - 9.375rem); /* Altezza dinamica per la lista - header - margin header - padding top container - spazio per fixed footer */
+    /* Questi valori sono stimati, potresti doverli aggiustare: */
+    /* 3.125rem (margin-top container) + 1.5625rem (margin-bottom h1) + 1.875rem (padding-top container) + 2.5rem (altezza h1 stimata) + 9.375rem (altezza fixed footer) */
     overflow-y: auto;
     padding-right: 0.3125rem; /* 5px / 16 = 0.3125rem */
 }
