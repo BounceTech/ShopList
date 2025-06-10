@@ -1,51 +1,35 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lista Spesa</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il mio carrello</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="app">
-    <header class="app-header">
-        <h1>🛒 La Mia Spesa</h1>
-    </header>
+    <div class="container">
+        <h1>Il mio carrello</h1>
 
-    <section class="input-section">
-        <div class="form-group">
-            <label for="itemInput">Prodotto:</label>
-            <input type="text" id="itemInput" placeholder="Es. Latte" />
+        <div id="shopping-list">
+        
         </div>
-        <div class="form-group">
-            <label for="priceInput">Prezzo (€):</label>
-            <input type="number" id="priceInput" placeholder="Es. 1.99" step="0.01" />
+
+        <div class="bottom-section-unified">
+            <div class="input-row">
+                <input type="text" id="itemNameInput" placeholder="Nome">
+                <input type="number" id="itemPriceInput" placeholder="Prezzo" min="0" step="0.01">
+                <button id="addItemButton">+</button>
+            </div>
+
+            <div class="summary-row">
+                <span class="total-label">Totale</span>
+                <span id="totalAmount">0.00€</span>
+                <button id="finishShoppingButton">Fine spesa</button>
+            </div>
         </div>
-        <button class="add-item-btn" onclick="addItem()">Aggiungi Prodotto</button>
-    </section>
+    </div>
 
-    <section class="summary-section">
-        <h2>Riepilogo</h2>
-        <div class="total">
-            Totale Provvisorio: <span id="totalAmount">€0.00</span>
-        </div>
-    </section>
-    
-    <section class="list-section">
-        <h2>Prodotti</h2>
-        <ul id="itemList">
-            <!-- Gli elementi della lista verranno aggiunti qui da JavaScript -->
-        </ul>
-    </section>
-    
-    <footer class="app-footer">
-        <button onclick="exportToPDF()" class="EndButton primary-action-btn">🛒 Conferma e Stampa PDF</button>
-    </footer>
-  </main>
-
-  <script src="script.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

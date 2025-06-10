@@ -1,122 +1,254 @@
-const itemInput = document.getElementById("itemInput");
-const priceInput = document.getElementById("priceInput");
-const list = document.getElementById("itemList");
-const totalSpan = document.getElementById("totalAmount");
-let total = 0;
+document.addEventListener('DOMContentLoaded', () => {
+    const shoppingListDiv = document.getElementById('shopping-list');
+    const itemNameInput = document.getElementById('itemNameInput');
+    const itemPriceInput = document.getElementById('itemPriceInput');
+    const addItemButton = document.getElementById('addItemButton');
+    const totalAmountSpan = document.getElementById('totalAmount');
+    const finishShoppingButton = document.getElementById('finishShoppingButton');
 
-function loadItems() {
-  const items = JSON.parse(localStorage.getItem("groceryList")) || [];
-  total = 0;
-  items.forEach(({ name, price }) => {
-    createItem(name, price);
-    total += price;
-  });
-  updateTotal();
-}
+    // Funzione per aggiornare il totale
+    const updateTotalPrice = () => {
+        let currentTotal = 0;
+        document.querySelectorAll('.item-card').forEach(itemCard => {
+            const originalPriceText = itemCard.querySelector('.original-price').textContent;
+            const originalPrice = parseFloat(originalPriceText.replace(',', '.')); // Prezzo base
+            const quantityText = itemCard.querySelector('.item-quantity').textContent;
+            const quantity = parseInt(quantityText); // Quantità
 
-function createItem(name, price) {
-  const li = document.createElement("li");
+            if (!isNaN(originalPrice) && !isNaN(quantity) && quantity > 0) {
+                currentTotal += originalPrice * quantity;
+            }
+        });
+        totalAmountSpan.textContent = currentTotal.toFixed(2).replace('.', ',') + '€'; // Formato italiano
+    };
 
-  const nameSpan = document.createElement("span");
-  nameSpan.textContent = name;
+    // Funzione per gestire l'aumento/diminuzione della quantità
+    const handleQuantityChange = (event) => {
+        const button = event.target;
+        const itemCard = button.closest('.item-card');
+        const quantitySpan = itemCard.querySelector('.item-quantity');
+        let currentQuantity = parseInt(quantitySpan.textContent);
 
-  const priceSpan = document.createElement("span");
-  priceSpan.textContent = `€${price.toFixed(2)}`;
-  priceSpan.style.marginLeft = "auto";
-  priceSpan.style.paddingRight = "1rem";
+        if (button.classList.contains('increase-quantity')) {
+            currentQuantity++;
+        } else if (button.classList.contains('decrease-quantity')) {
+            if (currentQuantity > 1) { // Non scendere sotto 1
+                currentQuantity--;
+            }
+        }
 
-  const removeBtn = document.createElement("button");
-  removeBtn.innerHTML = "✕";
-  removeBtn.onclick = () => {
-    li.remove();
-    total -= price;
-    updateTotal();
-    saveItems();
-  };
+        quantitySpan.textContent = currentQuantity; // Aggiorna il numero visualizzato
 
-  li.appendChild(nameSpan);
-  li.appendChild(priceSpan);
-  li.appendChild(removeBtn);
-  list.appendChild(li);
-}
+        const originalPriceText = itemCard.querySelector('.original-price').textContent;
+        const originalPrice = parseFloat(originalPriceText.replace(',', '.'));
 
-function addItem() {
-  const name = itemInput.value.trim();
-  const price = parseFloat(priceInput.value);
+        // Ricalcola il prezzo dell'articolo basato sulla nuova quantità
+        const newCalculatedPrice = originalPrice * currentQuantity;
+        itemCard.querySelector('.item-price').textContent = newCalculatedPrice.toFixed(2).replace('.', ',') + '€';
 
-  if (!name || isNaN(price)) return;
+        updateTotalPrice(); // Aggiorna il totale generale
+    };
 
-  createItem(name, price);
-  total += price;
-  updateTotal();
-  itemInput.value = "";
-  priceInput.value = "";
-  saveItems();
-}
+    // Funzione per aggiungere un articolo
+    const addItem = (name, price) => {
+        if (!name || name.trim() === '') {
+            alert("Per favore, inserisci il nome dell'articolo.");
+            return;
+        }
+        if (isNaN(price) || price <= 0) {
+            alert("Per favore, inserisci un prezzo valido (un numero maggiore di zero).");
+            return;
+        }
 
-function updateTotal() {
-  totalSpan.textContent = `€${total.toFixed(2)}`;
-}
+        const itemCard = document.createElement('div');
+        itemCard.classList.add('item-card', 'fade-in');
+        itemCard.innerHTML = `
+            <span class="item-name">${name}</span>
+            <span class="original-price" style="display:none;">${price.toFixed(2).replace('.', ',')}</span>
+            <span class="item-price">${price.toFixed(2).replace('.', ',')}€</span>
+            <div class="quantity-controls">
+                <button class="decrease-quantity">-</button>
+                <span class="item-quantity">1</span>
+                <button class="increase-quantity">+</button>
+            </div>
+            <button class="remove-item">X</button>
+        `;
 
-function saveItems() {
-  const items = [];
-  document.querySelectorAll("#itemList li").forEach(li => {
-    const spans = li.querySelectorAll("span");
-    const name = spans[0].textContent.trim();
-    const priceText = spans[1].textContent.replace("€", "");
-    const price = parseFloat(priceText);
-    if (name && !isNaN(price)) {
-      items.push({ name, price });
-    }
-  });
-  localStorage.setItem("groceryList", JSON.stringify(items));
-}
+        shoppingListDiv.appendChild(itemCard);
 
-async function exportToPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+        // Aggiungi event listeners per il nuovo articolo
+        itemCard.querySelector('.remove-item').addEventListener('click', (event) => {
+            itemCard.classList.remove('fade-in');
+            itemCard.classList.add('fade-out');
+            itemCard.addEventListener('animationend', () => {
+                itemCard.remove();
+                updateTotalPrice();
+            }, { once: true });
+        });
 
-  const items = JSON.parse(localStorage.getItem("groceryList")) || [];
-  let y = 20;
-  const date = new Date().toLocaleDateString();
-  const Name = `Spesa_${date}.pdf`;
+        // Aggiungi event listeners per i pulsanti di quantità del nuovo articolo
+        itemCard.querySelector('.increase-quantity').addEventListener('click', handleQuantityChange);
+        itemCard.querySelector('.decrease-quantity').addEventListener('click', handleQuantityChange);
 
-  // Header
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
-  doc.text("Lista della Spesa", 10, 10);
-  doc.setFontSize(10);
-  doc.text(`Data: ${date}`, 150, 10);
+        itemNameInput.value = '';
+        itemPriceInput.value = '';
+        updateTotalPrice();
+        itemNameInput.focus();
+    };
 
-  // Table headers
-  doc.setFont("helvetica", "bold");
-  doc.setFillColor(230, 230, 250);
-  doc.rect(10, y, 190, 8, 'F');
-  doc.text("Prodotto", 12, y + 6);
-  doc.text("Prezzo", 170, y + 6);
-  y += 10;
+    // Gestione dell'aggiunta di un nuovo articolo
+    addItemButton.addEventListener('click', () => {
+        const name = itemNameInput.value.trim();
+        const price = parseFloat(itemPriceInput.value.replace(',', '.'));
 
-  // Table rows
-  doc.setFont("helvetica", "normal");
-  items.forEach(({ name, price }) => {
-    doc.text(name, 12, y);
-    doc.text(`€${price.toFixed(2)}`, 170, y);
-    y += 8;
-  });
+        addItem(name, price);
+    });
 
-  // Totale
-  y += 5;
-  doc.setFont("helvetica", "bold");
-  doc.text(`Totale: €${total.toFixed(2)}`, 150, y);
+    // Permetti di aggiungere con "Invio" nei campi input
+    itemNameInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            itemPriceInput.focus();
+        }
+    });
 
-  doc.save(Name);
+    itemPriceInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            addItemButton.click();
+        }
+    });
 
-  // Clear list after saving
-  localStorage.removeItem("groceryList");
-  list.innerHTML = "";
-  total = 0;
-  updateTotal();
-}
+    // Inizializza event listeners per gli articoli predefiniti all'avvio
+    document.querySelectorAll('.item-card').forEach(itemCard => {
+        // Remove button
+        itemCard.querySelector('.remove-item').addEventListener('click', (event) => {
+            const currentItemCard = event.target.closest('.item-card');
+            if (currentItemCard) {
+                currentItemCard.classList.remove('fade-in');
+                currentItemCard.classList.add('fade-out');
+                currentItemCard.addEventListener('animationend', () => {
+                    currentItemCard.remove();
+                    updateTotalPrice();
+                }, { once: true });
+            }
+        });
 
-window.onload = loadItems;
-itemInput.addEventListener("keyup", e => e.key === "Enter" && addItem());
+        // Quantity buttons
+        itemCard.querySelector('.increase-quantity').addEventListener('click', handleQuantityChange);
+        itemCard.querySelector('.decrease-quantity').addEventListener('click', handleQuantityChange);
+    });
+
+    // Funzione per generare il PDF con jsPDF
+    const generatePdf = () => {
+        const items = [];
+        document.querySelectorAll('.item-card').forEach(itemCard => {
+            const name = itemCard.querySelector('.item-name').textContent;
+            const originalPrice = parseFloat(itemCard.querySelector('.original-price').textContent.replace(',', '.'));
+            const quantity = parseInt(itemCard.querySelector('.item-quantity').textContent);
+            const calculatedPrice = (originalPrice * quantity).toFixed(2).replace('.', ','); // Prezzo calcolato per l'articolo
+
+            items.push({ name, quantity, price: calculatedPrice + '€', originalPrice: originalPrice.toFixed(2).replace('.', ',') + '€/pz' });
+        });
+
+        if (items.length === 0) {
+            alert("Nessun articolo da salvare nel PDF.");
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const margin = 20;
+        let y = margin;
+
+        // Titolo
+        doc.setFontSize(22);
+        doc.text("Riepilogo Spesa", 105, y, { align: 'center' });
+        y += 10;
+        doc.setFontSize(12);
+        const date = new Date().toLocaleDateString('it-IT');
+        doc.text(`Data: ${date}`, 105, y, { align: 'center' });
+        y += 20;
+
+        // Header della tabella
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text("Articolo", margin, y);
+        doc.text("Q.tà", margin + 70, y, { align: 'center' }); // Posizione per quantità
+        doc.text("Prezzo (pz)", margin + 110, y, { align: 'right' }); // Posizione per prezzo unitario
+        doc.text("Totale", 180 - margin, y, { align: 'right' }); // Posizione per prezzo totale articolo
+        y += 5;
+        doc.setLineWidth(0.5);
+        doc.line(margin, y, 210 - margin, y);
+        y += 10;
+
+        // Lista degli articoli
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'normal');
+        items.forEach(item => {
+            doc.text(item.name, margin, y);
+            doc.text(item.quantity.toString(), margin + 70, y, { align: 'center' });
+            doc.text(item.originalPrice, margin + 110, y, { align: 'right' });
+            doc.text(item.price, 180 - margin, y, { align: 'right' });
+            y += 10;
+            if (y > 280) {
+                doc.addPage();
+                y = margin;
+                doc.setFontSize(14);
+                doc.setFont(undefined, 'bold');
+                doc.text("Articolo", margin, y);
+                doc.text("Q.tà", margin + 70, y, { align: 'center' });
+                doc.text("Prezzo (pz)", margin + 110, y, { align: 'right' });
+                doc.text("Totale", 180 - margin, y, { align: 'right' });
+                y += 5;
+                doc.setLineWidth(0.5);
+                doc.line(margin, y, 210 - margin, y);
+                y += 10;
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'normal');
+            }
+        });
+
+        // Linea prima del totale
+        y += 10;
+        doc.setLineWidth(1);
+        doc.line(margin, y, 210 - margin, y);
+        y += 10;
+
+        // Totale generale
+        doc.setFontSize(16);
+        doc.setFont(undefined, 'bold');
+        doc.text(`Totale complessivo: ${totalAmountSpan.textContent}`, 180 - margin, y, { align: 'right' });
+
+        doc.save(`spesa_${new Date().toISOString().slice(0, 10)}.pdf`);
+    };
+
+    // Gestione del tasto "Fine spesa"
+    finishShoppingButton.addEventListener('click', () => {
+        const currentTotalAmount = parseFloat(totalAmountSpan.textContent.replace('€', '').replace(',', '.'));
+
+        if (currentTotalAmount > 0) {
+            generatePdf();
+            const itemCards = Array.from(document.querySelectorAll('.item-card'));
+            let delay = 0;
+            itemCards.forEach((itemCard, index) => {
+                setTimeout(() => {
+                    itemCard.classList.add('fade-out');
+                    itemCard.addEventListener('animationend', () => {
+                        itemCard.remove();
+                        if (index === itemCards.length - 1) {
+                            updateTotalPrice();
+                        }
+                    }, { once: true });
+                }, delay);
+                delay += 70;
+            });
+        } else {
+            alert("Il carrello è vuoto. Aggiungi degli articoli prima di terminare la spesa.");
+        }
+    });
+
+    // Aggiorna il totale iniziale quando la pagina carica
+    updateTotalPrice();
+});
