@@ -3,7 +3,6 @@ body {
     background-color: #f0f8ff; /* Azzurro chiaro per lo sfondo */
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Allinea in alto, non al centro verticale */
     min-height: 100vh;
     margin: 0;
     padding: 1.25rem; /* 20px / 16 = 1.25rem */
@@ -20,7 +19,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1.25rem; /* 20px / 16 = 1.25rem */
-    margin-top: 3.125rem; /* 50px / 16 = 3.125rem */
 }
 
 h1 {
@@ -170,8 +168,11 @@ h1 {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1); /* 0 2px 4px */
 }
 
+/*parte finale*/
 .bottom-section-unified {
     background-color: #ceeaf5;
+    align-content: flex-end;
+    margin-top: auto;
     padding: 1.25rem; /* 20px / 16 = 1.25rem */
     border-radius: 1.25rem; /* 20px / 16 = 1.25rem */
     box-shadow: 0 0.3125rem 0.9375rem rgba(0, 0, 0, 0.08); /* 0 5px 15px */
