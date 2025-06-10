@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
         doc.setFont(undefined, 'bold');
         doc.text(`Totale complessivo: ${totalAmountSpan.textContent}`, 180 - margin, y, { align: 'right' });
 
-        doc.save(`spesa | ${new Date().toISOString().slice(0, 10)}.pdf`);
+        doc.save(`Spesa_${new Date().toISOString().slice(2, 10)}.pdf`);
     };
 
     // Gestione del tasto "Fine spesa"
