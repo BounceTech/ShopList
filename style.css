@@ -13,12 +13,15 @@
   padding: 0;
   box-sizing: border-box;
   font-family: var(--font);
+  -webkit-tap-highlight-color: transparent; /* Rimuove il flash blu al tocco su mobile */
 }
 
 body {
   background: var(--bg);
   color: var(--text);
   padding: 1rem;
+  /* Per un'app a schermo intero, potresti considerare:
+     min-height: 100dvh; /* Usa dynamic viewport height */
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -27,53 +30,91 @@ body {
 
 .app {
   width: 100%;
-  max-width: 400px;
+  max-width: 450px; /* Leggermente più largo per dare respiro */
   background: var(--card);
   padding: 2rem;
   border-radius: 1.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Spazio tra le sezioni principali */
 }
 
-h1 {
+/* Header */
+.app-header h1 {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0; /* Il gap di .app gestisce la spaziatura */
   font-weight: 800;
   font-size: 1.8rem;
   color: var(--accent);
 }
 
-.input-group {
+/* Input Section */
+.input-section {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  flex-direction: column;
+  gap: 1rem; /* Spazio tra i gruppi di form e il pulsante aggiungi */
 }
 
-input {
-  flex: 1;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem; /* Spazio tra label e input */
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-light); /* Più chiaro per contrasto su --card */
+}
+
+input[type="text"],
+input[type="number"] {
   padding: 0.75rem;
   border: none;
-  border-radius: 1rem;
+  border-radius: 0.5rem; /* Più squadrato, moderno */
   font-size: 1rem;
   background: #ffffff;
   color: #333;
   width: 100%;
 }
 
-button {
+input::placeholder {
+  color: #999;
+}
+
+.add-item-btn {
   background: var(--accent);
   border: none;
-  padding: 0.75rem 1rem;
-  border-radius: 1rem;
-  font-size: 1.2rem;
+  padding: 0.85rem 1rem; /* Leggermente più alto per facilitare il tocco */
+  border-radius: 0.5rem;
+  font-size: 1rem;
   color: #fff;
   cursor: pointer;
   font-weight: bold;
   transition: background 0.2s ease-in-out;
+  text-align: center;
+}
+
+.add-item-btn:hover, .add-item-btn:focus {
+  background: #8cbce8; /* Un po' più scuro di --accent */
+  outline: none;
+}
+
+/* Summary and List Sections */
+.summary-section h2,
+.list-section h2 {
+  font-size: 1.3rem;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--accent);
 }
 
 ul {
   list-style: none;
-  margin-top: 1rem;
+  padding-left: 0; /* Rimuove il padding di default */
+  margin-top: 0; /* Gestito dal gap della section */
 }
 
 li {
@@ -86,19 +127,59 @@ li {
   margin-bottom: 0.6rem;
   font-size: 1rem;
   color: var(--text-light);
+  word-break: break-word; /* Evita overflow orizzontale per nomi lunghi */
+}
+
+li span:first-child { /* Nome prodotto */
+  flex-grow: 1;
+  margin-right: 0.5rem;
+}
+
+li span:nth-child(2) { /* Prezzo */
+  margin-left: auto; /* Spinge il prezzo a destra */
+  padding-right: 1rem; /* Spazio prima del pulsante di rimozione */
+  white-space: nowrap; /* Evita che il prezzo vada a capo */
+  font-weight: 600;
 }
 
 li button {
   background: transparent;
   border: none;
   color: #f88;
-  font-size: 1.2rem;
+  font-size: 1.3rem; /* Leggermente più grande per facilitare il tocco */
   cursor: pointer;
+  padding: 0.25rem 0.5rem; /* Aumenta l'area cliccabile */
+  line-height: 1; /* Allinea meglio la X */
 }
+
 .total {
-  margin-top: 1rem;
+  margin-top: 0; /* Gestito dal gap della section */
   text-align: right;
   font-size: 1.2rem;
-  color: var(--accent);
+  color: var(--text-light);
   font-weight: 600;
+}
+
+/* Footer */
+.app-footer {
+  margin-top: auto; /* Spinge il footer in basso se .app ha altezza sufficiente */
+}
+
+.primary-action-btn {
+  background-color: #5cb85c; /* Verde per azione primaria */
+  color: white;
+  border: none;
+  padding: 0.9rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  width: 100%;
+  text-align: center;
+}
+
+.primary-action-btn:hover, .primary-action-btn:focus {
+  background-color: #4cae4c; /* Verde più scuro */
+  outline: none;
 }

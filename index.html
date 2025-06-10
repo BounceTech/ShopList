@@ -9,20 +9,39 @@
 </head>
 <body>
   <main class="app">
-    <h1>🛒 La Mia Spesa</h1>
-    <div class="input-group">
-        <input type="text" id="itemInput" placeholder="Nome" />
-        <input type="number" id="priceInput" placeholder="Prezzo" step="0.01" />
-        <button onclick="addItem()">＋</button>
-    </div>
+    <header class="app-header">
+        <h1>🛒 La Mia Spesa</h1>
+    </header>
 
-    <div class="total">
-    Totale: <span id="totalAmount">€0.00</span>
-    </div>
+    <section class="input-section">
+        <div class="form-group">
+            <label for="itemInput">Prodotto:</label>
+            <input type="text" id="itemInput" placeholder="Es. Latte" />
+        </div>
+        <div class="form-group">
+            <label for="priceInput">Prezzo (€):</label>
+            <input type="number" id="priceInput" placeholder="Es. 1.99" step="0.01" />
+        </div>
+        <button class="add-item-btn" onclick="addItem()">Aggiungi Prodotto</button>
+    </section>
+
+    <section class="summary-section">
+        <h2>Riepilogo</h2>
+        <div class="total">
+            Totale Provvisorio: <span id="totalAmount">€0.00</span>
+        </div>
+    </section>
     
-    <ul id="itemList"></ul>
-    <button onclick="exportToPDF()">Fine spesa</button>
-
+    <section class="list-section">
+        <h2>Prodotti</h2>
+        <ul id="itemList">
+            <!-- Gli elementi della lista verranno aggiunti qui da JavaScript -->
+        </ul>
+    </section>
+    
+    <footer class="app-footer">
+        <button onclick="exportToPDF()" class="EndButton primary-action-btn">🛒 Conferma e Stampa PDF</button>
+    </footer>
   </main>
 
   <script src="script.js"></script>
